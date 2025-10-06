@@ -13,6 +13,7 @@ class MyOrdersScreen extends StatefulWidget {
 class _MyOrdersScreenState extends State<MyOrdersScreen>
     with TickerProviderStateMixin {
   String _selectedTab = 'active';
+  String _selectedRole = 'customer'; // 'customer' or 'worker'
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -43,6 +44,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
         slivers: [
           // Modern App Bar
           _buildSliverAppBar(),
+          // Role Selector
+          _buildRoleSelector(),
           // Tab Bar
           _buildTabBar(),
           // Content
@@ -54,84 +57,174 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 160,
-      floating: false,
+      expandedHeight: 140,
       pinned: true,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      flexibleSpace: FlexibleSpaceBar(
-        title: Text(
-          '',
-          style: TextStyle(
-            color: const Color(0xFF1E293B),
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      elevation: 2,
+      shadowColor: Colors.black.withOpacity(0.1),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+      ),
+      flexibleSpace: _buildFlexibleSpaceBar(),
+    );
+  }
+
+  FlexibleSpaceBar _buildFlexibleSpaceBar() {
+    return FlexibleSpaceBar(
+      background: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 40, 24, 40),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.work_history_rounded,
+                  color: Colors.white,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Kelola Pesanan Anda',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Pantau status dan kelola semua pesanan.',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        background: Container(
+      ),
+    );
+  }
+
+  Widget _buildRoleSelector() {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildRoleButton(
+              'customer',
+              'Pesanan Saya',
+              Icons.shopping_bag_rounded,
+              'Lihat pesanan yang Anda buat.',
+            ),
+            const SizedBox(width: 16),
+            _buildRoleButton(
+              'worker',
+              'Pekerjaan Saya',
+              Icons.construction_rounded,
+              'Lihat pekerjaan yang Anda ambil.',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoleButton(
+    String role,
+    String label,
+    IconData icon,
+    String subtitle,
+  ) {
+    final isSelected = _selectedRole == role;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedRole = role;
+            _animationController.forward(from: 0.0);
+          });
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withOpacity(0.7),
-              ],
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : const Color(0xFFE2E8F0),
+              width: isSelected ? 2 : 1,
             ),
-            borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(30),
-            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.15),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(
-                          Icons.work_outline_rounded,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Kelola Pesanan Anda',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Pantau status dan kelola pesanan',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                icon,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : const Color(0xFF64748B),
+                size: 28,
               ),
-            ),
+              const SizedBox(height: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : const Color(0xFF1E293B),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  color: Color(0xFF64748B),
+                  fontSize: 12,
+                  height: 1.3,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -141,7 +234,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
   Widget _buildTabBar() {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+        margin: const EdgeInsets.fromLTRB(24, 8, 24, 0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -160,7 +253,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
               child: _buildTabButton(
                 'active',
                 'Aktif',
-                Icons.work_outline_rounded,
+                Icons.play_circle_fill_rounded,
               ),
             ),
             Expanded(
@@ -182,14 +275,16 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
       onTap: () {
         setState(() {
           _selectedTab = tab;
+          _animationController.forward(from: 0.0);
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF2D9CDB)
-              : Colors.transparent, // Biru Cerah untuk Brand
+              ? Theme.of(context).colorScheme.primary
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -230,7 +325,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
   }
 
   Widget _buildActiveOrders() {
-    final activeOrders = _getActiveOrders();
+    final activeOrders = _selectedRole == 'customer'
+        ? _getCustomerActiveOrders()
+        : _getWorkerActiveJobs();
 
     if (activeOrders.isEmpty) {
       return _buildEmptyState(
@@ -246,7 +343,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
   }
 
   Widget _buildHistoryOrders() {
-    final historyOrders = _getHistoryOrders();
+    final historyOrders = _selectedRole == 'customer'
+        ? _getCustomerHistoryOrders()
+        : _getWorkerHistoryJobs();
 
     if (historyOrders.isEmpty) {
       return _buildEmptyState(
@@ -496,7 +595,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
                           ),
                         ),
                       ),
-                      if (order.status == JobStatus.pending)
+                      if (order.status == JobStatus.pending &&
+                          _selectedRole == 'customer')
                         ElevatedButton(
                           onPressed: () => _showApplicantsDialog(order),
                           style: ElevatedButton.styleFrom(
@@ -522,7 +622,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
                     ],
                   ),
                 ),
-              ] else ...[
+              ] else if (_selectedRole == 'customer') ...[
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
@@ -566,7 +666,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
                       fontSize: 11,
                     ),
                   ),
-                  if (order.status == JobStatus.pending)
+                  if (order.status == JobStatus.pending &&
+                      _selectedRole == 'customer')
                     TextButton(
                       onPressed: () => _showCancelDialog(order),
                       style: TextButton.styleFrom(
@@ -740,8 +841,32 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              _showNotification('Pekerja dipilih!');
+              Navigator.pop(context); // Close the applicant list dialog
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Konfirmasi Pemilihan'),
+                  content: Text(
+                    'Apakah Anda yakin ingin memilih pekerja ini? Tindakan ini tidak dapat dibatalkan.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Batal'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _showNotification('Pekerja berhasil dipilih!');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF27AE60),
+                      ),
+                      child: const Text('Ya, Pilih Pekerja'),
+                    ),
+                  ],
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(
@@ -841,7 +966,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
     );
   }
 
-  List<JobModel> _getActiveOrders() {
+  List<JobModel> _getCustomerActiveOrders() {
     return [
       JobModel(
         id: '1',
@@ -879,7 +1004,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
     ];
   }
 
-  List<JobModel> _getHistoryOrders() {
+  List<JobModel> _getCustomerHistoryOrders() {
     return [
       JobModel(
         id: '3',
@@ -914,6 +1039,66 @@ class _MyOrdersScreenState extends State<MyOrdersScreen>
         createdAt: DateTime.now().subtract(const Duration(days: 14)),
         applicantIds: ['worker6'],
         status: JobStatus.completed,
+      ),
+    ];
+  }
+
+  List<JobModel> _getWorkerActiveJobs() {
+    return [
+      JobModel(
+        id: 'worker_job_1',
+        customerId: 'customer_x',
+        title: 'Antar Paket ke Sudirman',
+        description:
+            'Mengambil paket di kantor saya dan mengantarkannya ke Gedung SCBD. Paket berupa dokumen penting.',
+        category: JobCategory.delivery,
+        price: 50000,
+        location: Location(
+          latitude: -6.22,
+          longitude: 106.81,
+          address: 'Jakarta Selatan, SCBD',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+        status: JobStatus.inProgress,
+        assignedWorkerId: 'my_worker_id',
+      ),
+    ];
+  }
+
+  List<JobModel> _getWorkerHistoryJobs() {
+    return [
+      JobModel(
+        id: 'worker_job_2',
+        customerId: 'customer_y',
+        title: 'Rawat Taman Rumah',
+        description:
+            'Merawat taman, memotong rumput, dan memberi pupuk pada tanaman hias di halaman depan.',
+        category: JobCategory.gardening,
+        price: 120000,
+        location: Location(
+          latitude: -6.25,
+          longitude: 106.80,
+          address: 'Jakarta Selatan, Pondok Indah',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+        status: JobStatus.completed,
+        assignedWorkerId: 'my_worker_id',
+      ),
+      JobModel(
+        id: 'worker_job_3',
+        customerId: 'customer_z',
+        title: 'Jaga Hewan Peliharaan',
+        description: 'Menjaga anjing Golden Retriever selama 3 jam di rumah.',
+        category: JobCategory.petCare,
+        price: 75000,
+        location: Location(
+          latitude: -6.18,
+          longitude: 106.83,
+          address: 'Jakarta Pusat, Cikini',
+        ),
+        createdAt: DateTime.now().subtract(const Duration(days: 10)),
+        status: JobStatus.completed,
+        assignedWorkerId: 'my_worker_id',
       ),
     ];
   }

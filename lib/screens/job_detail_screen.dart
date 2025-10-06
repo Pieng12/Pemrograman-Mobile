@@ -82,7 +82,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 250.0,
+      expandedHeight: 200.0,
       pinned: true,
       floating: false,
       elevation: 2,
@@ -93,7 +93,11 @@ class _JobDetailScreenState extends State<JobDetailScreen>
       ),
       title: const Text(
         'Detail Pekerjaan',
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+          color: Colors.white,
+        ),
       ),
       centerTitle: true,
       flexibleSpace: FlexibleSpaceBar(
@@ -117,7 +121,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 80, 24, 24),
+                  padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -157,7 +161,7 @@ class _JobDetailScreenState extends State<JobDetailScreen>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       SlideTransition(
                         position: _slideAnimation,
                         child: Row(
@@ -346,28 +350,31 @@ class _JobDetailScreenState extends State<JobDetailScreen>
                   fit: BoxFit.cover,
                 ),
               ),
-              child: Center(
-                child: ElevatedButton.icon(
-                  onPressed: () => _openMap(
-                    widget.job.location.latitude,
-                    widget.job.location.longitude,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF1E293B),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
+              child: SizedBox(
+                width: double.infinity,
+                child: Center(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _openMap(
+                      widget.job.location.latitude,
+                      widget.job.location.longitude,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF1E293B),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 5,
                     ),
-                    elevation: 5,
-                  ),
-                  icon: const Icon(Icons.map_rounded, size: 18),
-                  label: const Text(
-                    'Lihat di Peta',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    icon: const Icon(Icons.map_rounded, size: 18),
+                    label: const Text(
+                      'Lihat di Peta',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/job_model.dart';
 
 class CreateJobScreen extends StatefulWidget {
-  const CreateJobScreen({super.key});
+  final Map<String, dynamic>? targetWorker;
+
+  const CreateJobScreen({super.key, this.targetWorker});
 
   @override
   State<CreateJobScreen> createState() => _CreateJobScreenState();
@@ -50,7 +52,6 @@ class _CreateJobScreenState extends State<CreateJobScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F9FF), // Light Sky Blue
       appBar: AppBar(
         title: const Text(
           'Buat Pesanan Baru',
@@ -97,6 +98,7 @@ class _CreateJobScreenState extends State<CreateJobScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (widget.targetWorker != null) _buildTargetWorkerInfo(),
                 _buildHeader(),
                 // Category Selection
                 _buildCategorySection(),
@@ -119,6 +121,53 @@ class _CreateJobScreenState extends State<CreateJobScreen>
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTargetWorkerInfo() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.person_pin_circle_rounded,
+              color: Theme.of(context).colorScheme.primary,
+              size: 28,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Pesanan Khusus Untuk:',
+                    style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    widget.targetWorker!['name'] ?? 'Pekerja',
+                    style: const TextStyle(
+                      color: Color(0xFF1E293B),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -477,30 +526,33 @@ class _CreateJobScreenState extends State<CreateJobScreen>
   }
 
   Widget _buildSubmitButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton.icon(
-        onPressed: _submitJob,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF10B981),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+    return Center(
+      child: SizedBox(
+        width: 300,
+        height: 56,
+        child: ElevatedButton.icon(
+          onPressed: _submitJob,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF10B981),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 5,
+            shadowColor: const Color(0xFF10B981).withOpacity(0.4),
+            padding: const EdgeInsets.symmetric(horizontal: 32),
           ),
-          elevation: 5,
-          shadowColor: const Color(0xFF10B981).withOpacity(0.4),
-        ),
-        icon: const Icon(
-          Icons.check_circle_outline_rounded,
-          color: Colors.white,
-        ),
-        label: const Text(
-          'Buat Pesanan',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+          icon: const Icon(
+            Icons.check_circle_outline_rounded,
             color: Colors.white,
+          ),
+          label: const Text(
+            'Buat Pesanan',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -556,12 +608,11 @@ class _CreateJobScreenState extends State<CreateJobScreen>
               surface: Colors.white,
               onSurface: const Color(0xFF1E293B),
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.primary,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -590,12 +641,11 @@ class _CreateJobScreenState extends State<CreateJobScreen>
               surface: Colors.white,
               onSurface: const Color(0xFF1E293B),
             ),
-            dialogBackgroundColor: Colors.white,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.primary,
               ),
-            ),
+            ), dialogTheme: DialogThemeData(backgroundColor: Colors.white),
           ),
           child: child!,
         );
@@ -611,11 +661,56 @@ class _CreateJobScreenState extends State<CreateJobScreen>
   }
 
   void _submitJob() {
-    if (_formKey.currentState!.validate()) {
-      // Simulate API call
-      Future.delayed(const Duration(seconds: 1), () {
-        _showSuccessDialog();
-      });
+    if (_formKey.currentState?.validate() ?? false) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.task_alt_rounded,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Konfirmasi Pesanan',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E293B),
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+          content: const Text(
+            'Apakah Anda yakin ingin membuat pesanan ini?',
+            style: TextStyle(color: Color(0xFF64748B), fontSize: 15),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Batal',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // Simulate API call
+                Future.delayed(const Duration(seconds: 1), () {
+                  _showSuccessDialog();
+                });
+              },
+              child: const Text('Ya, Lanjutkan'),
+            ),
+          ],
+        ),
+      );
     }
   }
 

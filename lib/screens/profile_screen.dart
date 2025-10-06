@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
+import 'saved_addresses_screen.dart';
+import 'payment_methods_screen.dart';
+import 'settings_screen.dart';
+import 'notifications_screen.dart';
+import 'security_screen.dart';
+import 'help_center_screen.dart';
+import 'about_app_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -49,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 160,
+      expandedHeight: 140,
       floating: false,
       pinned: true,
       backgroundColor: Colors.transparent,
@@ -86,50 +93,45 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.fromLTRB(24, 40, 24, 40),
+              child: Row(
                 children: [
-                  const SizedBox(height: 30),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.person_rounded,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Profil Saya',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.person_rounded,
-                          color: Colors.white,
-                          size: 32,
+                        const SizedBox(height: 4),
+                        Text(
+                          'Kelola profil dan pengaturan akun Anda.',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 12,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Akun Saya',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Kelola profil dan pengaturan',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -363,14 +365,28 @@ class _ProfileScreenState extends State<ProfileScreen>
               'Alamat Tersimpan',
               Icons.location_on_outlined,
               const Color(0xFF3B82F6),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SavedAddressesScreen(),
+                  ),
+                );
+              },
             ),
             _buildDivider(),
             _buildMenuItem(
               'Metode Pembayaran',
               Icons.payment_rounded,
               const Color(0xFF10B981),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentMethodsScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -382,21 +398,42 @@ class _ProfileScreenState extends State<ProfileScreen>
               'Pengaturan',
               Icons.settings_outlined,
               const Color(0xFF64748B),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                  ),
+                );
+              },
             ),
             _buildDivider(),
             _buildMenuItem(
               'Notifikasi',
               Icons.notifications_outlined,
               const Color(0xFFF59E0B),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationsScreen(),
+                  ),
+                );
+              },
             ),
             _buildDivider(),
             _buildMenuItem(
               'Keamanan',
               Icons.security_rounded,
               const Color(0xFF6366F1),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SecurityScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -408,14 +445,28 @@ class _ProfileScreenState extends State<ProfileScreen>
               'Pusat Bantuan',
               Icons.help_outline_rounded,
               const Color(0xFF0EA5E9),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HelpCenterScreen(),
+                  ),
+                );
+              },
             ),
             _buildDivider(),
             _buildMenuItem(
               'Tentang Aplikasi',
               Icons.info_outline_rounded,
               const Color(0xFF94A3B8),
-              () {},
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AboutAppScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),

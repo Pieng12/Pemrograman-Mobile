@@ -552,7 +552,36 @@ class _JobListScreenState extends State<JobListScreen>
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () => _showApplyDialog(job),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Konfirmasi'),
+                        content: Text(
+                          'Apakah Anda yakin ingin mengajukan diri untuk pekerjaan "${job.title}"?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('Batal'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _showApplyDialog(job);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(
+                                0xFF27AE60,
+                              ), // Hijau untuk Aksi / CTA
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Ya, Ajukan'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(
                       0xFF27AE60,

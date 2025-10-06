@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'create_job_screen.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
@@ -35,7 +36,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
       body: CustomScrollView(
         slivers: [
           // Modern App Bar
@@ -51,7 +51,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 160,
+      expandedHeight: 140,
       floating: false,
       pinned: true,
       backgroundColor: Colors.transparent,
@@ -85,7 +85,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40),
+                  // Content moved up
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Container(
@@ -105,17 +106,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen>
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Peringkat Pekerja Terbaik',
+                            const Text(
+                              'Peringkat Pekerja',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Lihat siapa yang paling produktif',
+                              'Lihat siapa yang paling produktif bulan ini.',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.8),
                                 fontSize: 12,
@@ -885,21 +886,7 @@ class _WorkerDetailScreenState extends State<WorkerDetailScreen>
         width: double.infinity,
         height: 56,
         child: ElevatedButton.icon(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Membuat pesanan untuk ${widget.worker['name']}...',
-                ),
-                backgroundColor: const Color(0xFF27AE60),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                margin: const EdgeInsets.all(16),
-              ),
-            );
-          },
+          onPressed: () => _showHireConfirmationDialog(),
           icon: const Icon(Icons.add_shopping_cart_rounded),
           label: const Text(
             'Gunakan Jasa',
@@ -913,6 +900,59 @@ class _WorkerDetailScreenState extends State<WorkerDetailScreen>
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showHireConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            Icon(
+              Icons.person_add_alt_1_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Konfirmasi Jasa',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1E293B),
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Anda akan membuat pesanan khusus untuk ${widget.worker['name']}. Lanjutkan?',
+          style: const TextStyle(color: Color(0xFF64748B), fontSize: 15),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Batal',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CreateJobScreen(targetWorker: widget.worker),
+                ),
+              );
+            },
+            child: const Text('Ya, Lanjutkan'),
+          ),
+        ],
       ),
     );
   }

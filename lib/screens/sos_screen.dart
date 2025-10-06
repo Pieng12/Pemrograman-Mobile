@@ -92,7 +92,7 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 160,
+      expandedHeight: 140,
       floating: false,
       pinned: true,
       backgroundColor: Colors.transparent,
@@ -128,9 +128,23 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 50),
+                  // Content moved up
+                  const SizedBox(height: 20),
                   Row(
                     children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Icon(
+                          Icons.sos_rounded,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,12 +153,13 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
                               'Butuh Bantuan Cepat?',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 24,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            const SizedBox(height: 4),
                             Text(
-                              'Dapatkan bantuan segera saat darurat',
+                              'Gunakan fitur darurat jika diperlukan.',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.8),
                                 fontSize: 12,
